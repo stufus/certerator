@@ -8,34 +8,34 @@ def certerator_config():
     ca = {}
     cert = {}
 
-    ca['commonName'] = "Microsoft Root Certificate Authority 2012"
-    ca['stateOrProvinceName'] = "Washington"
-    ca['localityName'] = "Redmond"
-    ca['organizationName'] = "Microsoft Corporation"
-    ca['countryName'] = "US"
+    ca['commonName'] = "MWR Root Authority"
+    ca['stateOrProvinceName'] = "Hampshire"
+    ca['localityName'] = "Basingstoke"
+    ca['organizationName'] = "MWR InfoSecurity"
+    ca['organizationalUnitName'] = "Certification Authority"
+    ca['emailAddress'] = "labs@mwrinfosecurity.com"
+    ca['countryName'] = "GB"
     ca['cert_filename'] = "ca.pem"
     ca['cert_key'] = "ca.key"
-    ca['cert_p12'] = "ca.p12"
-    ca['cert_der'] = "ca.cer"
-    ca['serial'] = 34729483
+    ca['serial'] = 123456
     ca['validfrom'] = "20100101000000Z"
     ca['validto'] = "20200101000000Z"
     ca['keyfilesize'] = 4096
     ca['hashalgorithm'] = "sha256"
 
-    cert['commonName'] = "Microsoft Windows"
-    cert['stateOrProvinceName'] = "Washington"
-    cert['localityName'] = "Redmond"
-    cert['organizationName'] = "Microsoft Corporation"
-    cert['countryName'] = "US"
-    cert['cert_filename'] = "cert.pem"
-    cert['cert_key'] = "cert.key"
-    cert['cert_p12'] = "cert.p12"
-    cert['serial'] = 90219302
-    cert['validfrom'] = "20160101000000Z"
+    cert['commonName'] = "MWR Code Signing Verifier"
+    cert['stateOrProvinceName'] = "Hampshire"
+    cert['localityName'] = "Basingstoke"
+    cert['organizationName'] = "MWR InfoSecurity"
+    cert['organizationalUnitName'] = "Code Management"
+    cert['emailAddress'] = "labs@mwrinfosecurity.com"
+    cert['countryName'] = "GB"
+    cert['cert_filename'] = "ca.pem"
+    cert['cert_key'] = "ca.key"
+    cert['serial'] = 234567
+    cert['validfrom'] = "20150101000000Z"
     cert['validto'] = "20180101000000Z"
     cert['keyfilesize'] = 4096
-    cert['hashalgorithm'] = "sha256"
 
     return ca, cert
 
