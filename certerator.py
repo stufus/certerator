@@ -39,6 +39,20 @@ def certerator_config():
 
     return ca, cert
 
+def banner():
+    print ""
+    print "       .mMMMMMm.             MMm    M   WW   W   WW   RRRRR"
+    print "      mMMMMMMMMMMM.           MM   MM    W   W   W    R   R"
+    print "     /MMMM-    -MM.           MM   MM    W   W   W    R   R"
+    print "    /MMM.    _  \/  ^         M M M M     W W W W     RRRR"
+    print "    |M.    aRRr    /W|        M M M M     W W W W     R  R"
+    print "    \/  .. ^^^   wWWW|        M  M  M      W   W      R   R"
+    print "       /WW\.  .wWWWW/         M  M  M      W   W      R    R"
+    print "       |WWWWWWWWWWW/"
+    print "         .WWWWWW.      Certerator (Code Signing Certificate Generator)"
+    print "                        stuart.morgan@mwrinfosecurity.com | @ukstufus"
+    print ""
+
 def openssl_generate_privatekey(size):
     key = crypto.PKey()
     key.generate_key(crypto.TYPE_RSA, size)
@@ -137,10 +151,7 @@ def make_p12(cert,key):
     return p12.export('mwr')
 
 if __name__ == "__main__":
-    sys.stdout.write("Certerator v0.1-pre1\n")
-    sys.stdout.write("Stuart Morgan (@ukstufus) <stuart.morgan@mwrinfosecurity.com>\n\n")
-    sys.stdout.flush()
-
+    banner
     try:
         config_ca, config_cert = certerator_config()
     
