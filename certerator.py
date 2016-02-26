@@ -1,5 +1,17 @@
 #/usr/bin/env python
 # -*- coding: utf-8 -*-
+#
+#  Certerator 0.1-pre1
+#  Stuart Morgan <stuart.morgan@mwrinfosecurity.com> @ukstufus
+#
+#  This will generate a CA and certificate (signed by the CA) which can be used
+#  for code signing. It will also display the commands to run using both osslsigncode
+#  or signtool.exe depending on preference.
+#
+#  This has been used successfully on simulated attack engagements to disguise
+#  the presence of an implant.
+#
+
 import os
 import sys
 from OpenSSL import crypto
