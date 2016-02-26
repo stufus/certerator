@@ -40,18 +40,18 @@ def certerator_config():
     return ca, cert
 
 def banner():
-    sys.stdout.write("\n"
-    sys.stdout.write("       .mMMMMMm.             MMm    M   WW   W   WW   RRRRR\n"
-    sys.stdout.write("      mMMMMMMMMMMM.           MM   MM    W   W   W    R   R\n"
-    sys.stdout.write("     /MMMM-    -MM.           MM   MM    W   W   W    R   R\n"
-    sys.stdout.write("    /MMM.    _  \/  ^         M M M M     W W W W     RRRR\n"
-    sys.stdout.write("    |M.    aRRr    /W|        M M M M     W W W W     R  R\n"
-    sys.stdout.write("    \/  .. ^^^   wWWW|        M  M  M      W   W      R   R\n"
-    sys.stdout.write("       /WW\.  .wWWWW/         M  M  M      W   W      R    R\n"
-    sys.stdout.write("       |WWWWWWWWWWW/\n"
-    sys.stdout.write("         .WWWWWW.      Certerator (Code Signing Certificate Generator)\n"
-    sys.stdout.write("                        stuart.morgan@mwrinfosecurity.com | @ukstufus\n"
-    sys.stdout.write("\n"
+    sys.stdout.write("\n")
+    sys.stdout.write("       .mMMMMMm.             MMm    M   WW   W   WW   RRRRR\n")
+    sys.stdout.write("      mMMMMMMMMMMM.           MM   MM    W   W   W    R   R\n")
+    sys.stdout.write("     /MMMM-    -MM.           MM   MM    W   W   W    R   R\n")
+    sys.stdout.write("    /MMM.    _  \/  ^         M M M M     W W W W     RRRR\n")
+    sys.stdout.write("    |M.    aRRr    /W|        M M M M     W W W W     R  R\n")
+    sys.stdout.write("    \/  .. ^^^   wWWW|        M  M  M      W   W      R   R\n")
+    sys.stdout.write("       /WW\.  .wWWWW/         M  M  M      W   W      R    R\n")
+    sys.stdout.write("       |WWWWWWWWWWW/\n")
+    sys.stdout.write("         .WWWWWW.      Certerator (Code Signing Certificate Generator)\n")
+    sys.stdout.write("                        stuart.morgan@mwrinfosecurity.com | @ukstufus\n")
+    sys.stdout.write("\n")
     sys.stdout.flush()
 
 def openssl_generate_privatekey(size):
@@ -95,6 +95,9 @@ def generate_ca(config_ca):
     ca.set_pubkey(key)
     ca.sign(key, config_ca['hashalgorithm'])
     return ca, key
+
+def colourise(string,colour):
+    return "\033["+colour+"m"+string+"\033[0m"
 
 def generate_certificate(config_cert, ca, cakey):
     # Generate the private key
@@ -152,44 +155,52 @@ def make_p12(cert,key):
     return p12.export('mwr')
 
 if __name__ == "__main__":
-    banner
+    banner()
     try:
         config_ca, config_cert = certerator_config()
     
         # Firstly, sort out the CA file
         if os.path.isfile(config_ca['cert_filename']) and os.path.isfile(config_ca['cert_key']):
-            sys.stdout.write("Reusing "+config_ca['cert_filename']+" as the CA\n")
+            sys.stdout.write(colourise("Reusing "+config_ca['cert_filename']+" as the CA\n",'0;36'))
             ca_cert = crypto.load_certificate(crypto.FILETYPE_PEM, file(config_ca['cert_filename']).read())
             ca_key = crypto.load_privatekey(crypto.FILETYPE_PEM, file(config_ca['cert_key']).read())
         else:
-            sys.stdout.write("Generating new CA...")
+            sys.stdout.write(colourise("Generating new CA...",'0;32'))
             sys.stdout.flush()
             ca_cert, ca_key = generate_ca(config_ca)
-            sys.stdout.write("..done\n")
+            sys.stdout.write(colourise("..done\n",'0;32'))
             open(config_ca['cert_filename'], "w").write(crypto.dump_certificate(crypto.FILETYPE_PEM, ca_cert))
-            open(config_ca['cert_der'], "w").write(crypto.dump_certificate(crypto.FILETYPE_DER, ca_cert))
+            open(config_ca['cert_der'], "wb").write(crypto.dump_certificate(crypto.FILETYPE_ASN1, ca_cert))
             open(config_ca['cert_key'], "w").write(crypto.dump_privatekey(crypto.FILETYPE_PEM, ca_key))
             open(config_ca['cert_p12'], "wb").write(make_p12(ca_cert,ca_key))
-
+            sys.stdout.write(colourise(" Written PEM CA certificate to "+config_ca['cert_filename']+"\n", '0;32'))
+            sys.stdout.write(colourise(" Written DER CA certificate to "+config_ca['cert_der']+"\n", '0;32'))
+            sys.stdout.write(colourise(" Written CA private key to "+config_ca['cert_key']+"\n", '0;32'))
+            sys.stdout.write(colourise(" Written CA PKCS12 (private key and certificate) to "+config_ca['cert_p12']+"\n", '0;32'))
+            
         # Now sort out the signing certificate
         if os.path.isfile(config_cert['cert_filename']) and os.path.isfile(config_cert['cert_key']):
-            sys.stdout.write("Reusing "+config_cert['cert_filename']+" as the signing certificate\n")
+            sys.stdout.write(colourise("Reusing "+config_cert['cert_filename']+" as the code signing certificate\n",'0;36'))
             cert_cert = crypto.load_certificate(crypto.FILETYPE_PEM, file(config_cert['cert_filename']).read())
             cert_key = crypto.load_privatekey(crypto.FILETYPE_PEM, file(config_cert['cert_key']).read())
         else:
-            sys.stdout.write("Generating new signing certificate...")
+            sys.stdout.write(colourise("Generating new signing certificate...",'0;32'))
             sys.stdout.flush()
             cert_cert, cert_key = generate_certificate(config_cert,ca_cert,ca_key)
-            sys.stdout.write("..done\n")
+            sys.stdout.write(colourise("..done\n",'0;32'))
             open(config_cert['cert_filename'], "w").write(crypto.dump_certificate(crypto.FILETYPE_PEM, cert_cert))
             open(config_cert['cert_key'], "w").write(crypto.dump_privatekey(crypto.FILETYPE_PEM, cert_key))
             open(config_cert['cert_p12'], "wb").write(make_p12(cert_cert,cert_key))
-
+            sys.stdout.write(colourise(" Written PEM certificate to "+config_cert['cert_filename']+"\n", '0;32'))
+            sys.stdout.write(colourise(" Written private key to "+config_cert['cert_key']+"\n", '0;32'))
+            sys.stdout.write(colourise(" Written PKCS12 (private key and certificate) to "+config_cert['cert_p12']+"\n", '0;32'))
 
         # Instructions
         sys.stdout.write("\n")
-        sys.stdout.write("Linux/UNIX: osslsigncode -pkcs12 "+config_cert['cert_p12']+" -pass mwr -in in.exe -out out.exe\n")
-        sys.stdout.write("Windows: signtool.exe sign /f "+config_cert['cert_p12']+" /p mwr in.exe\n")
+        sys.stdout.write(colourise("Linux/UNIX:\n",'0;31'))
+        sys.stdout.write(colourise(" osslsigncode -pkcs12 "+config_cert['cert_p12']+" -pass mwr -in in.exe -out out.exe\n\n",'1;31'))
+        sys.stdout.write(colourise("Windows:\n",'0;31'))
+        sys.stdout.write(colourise(" signtool.exe sign /f "+config_cert['cert_p12']+" /p mwr in.exe\n\n", '1;31'))
         sys.exit(0)
 
     except Exception as e:
