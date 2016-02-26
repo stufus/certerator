@@ -36,6 +36,7 @@ def certerator_config():
     cert['validfrom'] = "20150101000000Z"
     cert['validto'] = "20180101000000Z"
     cert['keyfilesize'] = 4096
+    cert['hashalgorithm'] = "sha256"
 
     return ca, cert
 
