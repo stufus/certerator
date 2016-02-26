@@ -28,6 +28,8 @@ def certerator_config():
     ca['emailAddress'] = "labs@mwrinfosecurity.com"
     ca['countryName'] = "GB"
     ca['cert_filename'] = "ca.pem"
+    ca['cert_der'] = "ca.cer"
+    ca['cert_p12'] = "ca.p12"
     ca['cert_key'] = "ca.key"
     ca['serial'] = 123456
     ca['validfrom'] = "20100101000000Z"
@@ -42,8 +44,9 @@ def certerator_config():
     cert['organizationalUnitName'] = "Code Management"
     cert['emailAddress'] = "labs@mwrinfosecurity.com"
     cert['countryName'] = "GB"
-    cert['cert_filename'] = "ca.pem"
-    cert['cert_key'] = "ca.key"
+    cert['cert_filename'] = "cert.pem"
+    cert['cert_key'] = "cert.key"
+    cert['cert_p12'] = "cert.p12"
     cert['serial'] = 234567
     cert['validfrom'] = "20150101000000Z"
     cert['validto'] = "20180101000000Z"
