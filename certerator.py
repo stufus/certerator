@@ -1,4 +1,5 @@
 #/usr/bin/env python
+# -*- coding: utf-8 -*-
 import os
 import sys
 import OpenSSL
@@ -78,17 +79,60 @@ def generate_ca(config_ca):
     ca.sign(key, config_ca['hashalgorithm'])
     return ca, key
 
+def generate_cert(config_cert, config_ca):
+    key = openssl_generate_privatekey(config_cert['keyfilesize'])
+    ca = generate_certificate(config_cert,key)
+    ca.add_extensions([
+        OpenSSL.crypto.X509Extension("basicConstraints", True,
+                               "CA:FALSE, pathlen:0"),
+        OpenSSL.crypto.X509Extension("keyUsage", True,
+                               "keyCertSign, cRLSign"),
+        OpenSSL.crypto.X509Extension("subjectKeyIdentifier", False, "hash",
+                               subject=ca),
+    ])
+    ca.add_extensions([
+        OpenSSL.crypto.X509Extension("authorityKeyIdentifier", False, "keyid:always",issuer=ca)
+    ])
+    ca.set_issuer(ca.get_subject())
+    ca.set_pubkey(key)
+    ca.sign(key, config_cert['hashalgorithm'])
+    return ca, key
+
 if __name__ == "__main__":
-    sys.stdout.write("Certerator v0.1-pre1")
-    sys.stdout.write("Stuart Morgan (@ukstufus) <stuart.morgan@mwrinfosecurity.com>")
+    sys.stdout.write("Certerator v0.1-pre1\n")
+    sys.stdout.write("Stuart Morgan (@ukstufus) <stuart.morgan@mwrinfosecurity.com>\n\n")
     sys.stdout.flush()
 
-    config_ca, config_cert = certerator_config()
-    ca, key = generate_ca(config_ca)
+    try:
+        config_ca, config_cert = certerator_config()
+    
+        # Firstly, sort out the CA file
+        if os.path.isfile(config_ca['cert_filename']) and os.path.isfile(config_ca['cert_key']):
+            sys.stdout.write("Reusing "+config_ca['cert_filename']+" as the CA\n")
+            ca_cert = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, file(config_ca['cert_filename']).read())
+            ca_key = OpenSSL.crypto.load_privatekey(OpenSSL.crypto.FILETYPE_PEM, file(config_ca['cert_key']).read())
+        else:
+            sys.stdout.write("Generating new CA...")
+            sys.stdout.flush()
+            ca_cert, ca_key = generate_ca(config_ca)
+            sys.stdout.write("..done\n")
+            open(config_ca['cert_filename'], "w").write(OpenSSL.crypto.dump_certificate(OpenSSL.crypto.FILETYPE_PEM, ca_cert))
+            open(config_ca['cert_key'], "w").write(OpenSSL.crypto.dump_privatekey(OpenSSL.crypto.FILETYPE_PEM, ca_key))
 
-    open(config_ca['cert_filename'], "wb").write(
-                OpenSSL.crypto.dump_certificate(OpenSSL.crypto.FILETYPE_PEM, ca))
-    open(config_ca['cert_key'], "wb").write(
-                OpenSSL.crypto.dump_privatekey(OpenSSL.crypto.FILETYPE_PEM, key))
-    sys.exit(0)
+        # Now sort out the signing certificate
+        if os.path.isfile(config_cert['cert_filename']) and os.path.isfile(config_cert['cert_key']):
+            sys.stdout.write("Reusing "+config_cert['cert_filename']+" as the signing certificate\n")
+            cert_cert = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, file(config_cert['cert_filename']).read())
+            cert_key = OpenSSL.crypto.load_privatekey(OpenSSL.crypto.FILETYPE_PEM, file(config_cert['cert_key']).read())
+        else:
+            sys.stdout.write("Generating new signing certificate...")
+            sys.stdout.flush()
+            cert_cert, cert_key = generate_certificate(config_cert)
+            sys.stdout.write("..done\n")
+            open(config_cert['cert_filename'], "w").write(OpenSSL.crypto.dump_certificate(OpenSSL.crypto.FILETYPE_PEM, cert_cert))
+            open(config_cert['cert_key'], "w").write(OpenSSL.crypto.dump_privatekey(OpenSSL.crypto.FILETYPE_PEM, cert_key))
+        sys.exit(0)
 
+    except Exception as e:
+        sys.stderr.write("Error: %s\n" % e)
+        exit(1)
