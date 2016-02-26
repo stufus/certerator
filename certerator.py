@@ -16,6 +16,7 @@ def certerator_config():
     ca['cert_filename'] = "ca.pem"
     ca['cert_key'] = "ca.key"
     ca['cert_p12'] = "ca.p12"
+    ca['cert_der'] = "ca.cer"
     ca['serial'] = 34729483
     ca['validfrom'] = "20100101000000Z"
     ca['validto'] = "20200101000000Z"
@@ -129,6 +130,12 @@ def generate_certificate(config_cert, ca, cakey):
     cert.sign(cakey, config_cert['hashalgorithm'])
     return cert, key
 
+def make_p12(cert,key):
+    p12 = crypto.PKCS12()
+    p12.set_certificate(cert)
+    p12.set_privatekey(key)
+    return p12.export('mwr')
+
 if __name__ == "__main__":
     sys.stdout.write("Certerator v0.1-pre1\n")
     sys.stdout.write("Stuart Morgan (@ukstufus) <stuart.morgan@mwrinfosecurity.com>\n\n")
@@ -148,7 +155,9 @@ if __name__ == "__main__":
             ca_cert, ca_key = generate_ca(config_ca)
             sys.stdout.write("..done\n")
             open(config_ca['cert_filename'], "w").write(crypto.dump_certificate(crypto.FILETYPE_PEM, ca_cert))
+            open(config_ca['cert_der'], "w").write(crypto.dump_certificate(crypto.FILETYPE_DER, ca_cert))
             open(config_ca['cert_key'], "w").write(crypto.dump_privatekey(crypto.FILETYPE_PEM, ca_key))
+            open(config_ca['cert_p12'], "wb").write(make_p12(ca_cert,ca_key))
 
         # Now sort out the signing certificate
         if os.path.isfile(config_cert['cert_filename']) and os.path.isfile(config_cert['cert_key']):
@@ -162,8 +171,13 @@ if __name__ == "__main__":
             sys.stdout.write("..done\n")
             open(config_cert['cert_filename'], "w").write(crypto.dump_certificate(crypto.FILETYPE_PEM, cert_cert))
             open(config_cert['cert_key'], "w").write(crypto.dump_privatekey(crypto.FILETYPE_PEM, cert_key))
+            open(config_cert['cert_p12'], "wb").write(make_p12(cert_cert,cert_key))
 
 
+        # Instructions
+        sys.stdout.write("\n")
+        sys.stdout.write("Linux/UNIX: osslsigncode -pkcs12 "+config_cert['cert_p12']+" -pass mwr -in in.exe -out out.exe\n")
+        sys.stdout.write("Windows: signtool.exe sign /f "+config_cert['cert_p12']+" /p mwr in.exe\n")
         sys.exit(0)
 
     except Exception as e:
