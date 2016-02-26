@@ -79,24 +79,26 @@ def generate_ca(config_ca):
     ca.sign(key, config_ca['hashalgorithm'])
     return ca, key
 
-def generate_cert(config_cert, config_ca):
+def generate_cert(config_cert, ca, cakey):
     key = openssl_generate_privatekey(config_cert['keyfilesize'])
-    ca = generate_certificate(config_cert,key)
-    ca.add_extensions([
+    cert = generate_certificate(config_cert,key)
+    cert.add_extensions([
         OpenSSL.crypto.X509Extension("basicConstraints", True,
                                "CA:FALSE, pathlen:0"),
         OpenSSL.crypto.X509Extension("keyUsage", True,
-                               "keyCertSign, cRLSign"),
+                               "digitalSignature"),
+        OpenSSL.crypto.X509Extension("extendedKeyUsage", True,
+                               "codeSigning,msCTLSign,timeStamping,msCodeInd,msCodeCom"),
         OpenSSL.crypto.X509Extension("subjectKeyIdentifier", False, "hash",
-                               subject=ca),
+                               subject=cert),
     ])
-    ca.add_extensions([
+    cert.add_extensions([
         OpenSSL.crypto.X509Extension("authorityKeyIdentifier", False, "keyid:always",issuer=ca)
     ])
-    ca.set_issuer(ca.get_subject())
-    ca.set_pubkey(key)
-    ca.sign(key, config_cert['hashalgorithm'])
-    return ca, key
+    cert.set_issuer(ca.get_subject())
+    cert.set_pubkey(key)
+    cert.sign(cakey, config_cert['hashalgorithm'])
+    return cert, key
 
 if __name__ == "__main__":
     sys.stdout.write("Certerator v0.1-pre1\n")
@@ -127,7 +129,7 @@ if __name__ == "__main__":
         else:
             sys.stdout.write("Generating new signing certificate...")
             sys.stdout.flush()
-            cert_cert, cert_key = generate_certificate(config_cert)
+            cert_cert, cert_key = generate_certificate(config_cert,ca_cert,ca_key)
             sys.stdout.write("..done\n")
             open(config_cert['cert_filename'], "w").write(OpenSSL.crypto.dump_certificate(OpenSSL.crypto.FILETYPE_PEM, cert_cert))
             open(config_cert['cert_key'], "w").write(OpenSSL.crypto.dump_privatekey(OpenSSL.crypto.FILETYPE_PEM, cert_key))
