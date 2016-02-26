@@ -218,4 +218,4 @@ if __name__ == "__main__":
 
     except Exception as e:
         sys.stderr.write("Error: %s\n" % e)
-        exit(1)
+        sys.exit(1)
