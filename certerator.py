@@ -40,18 +40,19 @@ def certerator_config():
     return ca, cert
 
 def banner():
-    print ""
-    print "       .mMMMMMm.             MMm    M   WW   W   WW   RRRRR"
-    print "      mMMMMMMMMMMM.           MM   MM    W   W   W    R   R"
-    print "     /MMMM-    -MM.           MM   MM    W   W   W    R   R"
-    print "    /MMM.    _  \/  ^         M M M M     W W W W     RRRR"
-    print "    |M.    aRRr    /W|        M M M M     W W W W     R  R"
-    print "    \/  .. ^^^   wWWW|        M  M  M      W   W      R   R"
-    print "       /WW\.  .wWWWW/         M  M  M      W   W      R    R"
-    print "       |WWWWWWWWWWW/"
-    print "         .WWWWWW.      Certerator (Code Signing Certificate Generator)"
-    print "                        stuart.morgan@mwrinfosecurity.com | @ukstufus"
-    print ""
+    sys.stdout.write("\n"
+    sys.stdout.write("       .mMMMMMm.             MMm    M   WW   W   WW   RRRRR\n"
+    sys.stdout.write("      mMMMMMMMMMMM.           MM   MM    W   W   W    R   R\n"
+    sys.stdout.write("     /MMMM-    -MM.           MM   MM    W   W   W    R   R\n"
+    sys.stdout.write("    /MMM.    _  \/  ^         M M M M     W W W W     RRRR\n"
+    sys.stdout.write("    |M.    aRRr    /W|        M M M M     W W W W     R  R\n"
+    sys.stdout.write("    \/  .. ^^^   wWWW|        M  M  M      W   W      R   R\n"
+    sys.stdout.write("       /WW\.  .wWWWW/         M  M  M      W   W      R    R\n"
+    sys.stdout.write("       |WWWWWWWWWWW/\n"
+    sys.stdout.write("         .WWWWWW.      Certerator (Code Signing Certificate Generator)\n"
+    sys.stdout.write("                        stuart.morgan@mwrinfosecurity.com | @ukstufus\n"
+    sys.stdout.write("\n"
+    sys.stdout.flush()
 
 def openssl_generate_privatekey(size):
     key = crypto.PKey()
