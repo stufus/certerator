@@ -5,7 +5,12 @@
 #  Stuart Morgan <stuart.morgan@mwrinfosecurity.com> @ukstufus
 #
 #  This tool will parse a Windows Registry Editor 'reg' file of a certificate,
-#  and produce a command line representation of it.
+#  and produce a command line representation of it. It assumes that only one
+#  certificate (i.e. one branch) is exported in the reg file.
+#
+#  It reads the reg file from STDIN. For example:
+#     cat export.reg | ./reg2cmd.py
+#     ./reg2cmd.py < export.reg
 #
 
 import os
