@@ -10,3 +10,5 @@ A detailed description of the research, including tool usage instructions, is av
 * Cover a variety of methods of installing this on a target's machine, either as a user or local administrator.
 * A demonstration and an example of the insertion of an Extended Validation (EV) certificate which is honoured by Windows and IE.
 * A discussion of why the name of both the signer and the EXE metadata can be important in later versions of Windows.
+
+It is written with a focus on command-line access and stealth and based on the assumption that the creation and insertion of these binaries should not be obvious to a user.
