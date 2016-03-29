@@ -46,6 +46,7 @@ def certerator_config():
     cert['countryName'] = "GB"
     cert['cert_filename'] = "cert.pem"
     cert['cert_key'] = "cert.key"
+    cert['cert_csr'] = "cert.csr"
     cert['cert_p12'] = "cert.p12"
     cert['serial'] = 234567
     cert['validfrom'] = "20150101000000Z"
@@ -162,7 +163,7 @@ def generate_certificate(config_cert, ca, cakey):
     ])
 
     cert.sign(cakey, config_cert['hashalgorithm'])
-    return cert, key
+    return req, cert, key
 
 def make_p12(cert,key):
     p12 = crypto.PKCS12()
@@ -205,11 +206,13 @@ if __name__ == "__main__":
         else:
             sys.stdout.write(colourise("Generating new signing certificate...",'0;32'))
             sys.stdout.flush()
-            cert_cert, cert_key = generate_certificate(config_cert,ca_cert,ca_key)
+            cert_req, cert_cert, cert_key = generate_certificate(config_cert,ca_cert,ca_key)
             sys.stdout.write(colourise("..done\n",'0;32'))
             open(config_cert['cert_filename'], "w").write(crypto.dump_certificate(crypto.FILETYPE_PEM, cert_cert))
             open(config_cert['cert_key'], "w").write(crypto.dump_privatekey(crypto.FILETYPE_PEM, cert_key))
+            open(config_cert['cert_csr'], "w").write(crypto.dump_certificate_request(crypto.FILETYPE_PEM, cert_req))
             open(config_cert['cert_p12'], "wb").write(make_p12(cert_cert,cert_key))
+            sys.stdout.write(colourise(" Written CSR certificate request to "+config_cert['cert_csr']+"\n", '0;32'))
             sys.stdout.write(colourise(" Written PEM certificate to "+config_cert['cert_filename']+"\n", '0;32'))
             sys.stdout.write(colourise(" Written private key to "+config_cert['cert_key']+"\n", '0;32'))
             sys.stdout.write(colourise(" Written PKCS12 (private key and certificate) to "+config_cert['cert_p12']+"\n", '0;32'))
