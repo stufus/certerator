@@ -4,6 +4,8 @@
 #  Certerator 0.1-pre1
 #  Stuart Morgan <stuart.morgan@mwrinfosecurity.com> @ukstufus
 #
+#  https://github.com/stufus/certerator
+#
 #  This tool will parse a Windows Registry Editor 'reg' file of a certificate,
 #  and produce a command line representation of it. It assumes that only one
 #  certificate (i.e. one branch) is exported in the reg file.

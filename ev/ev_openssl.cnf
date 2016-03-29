@@ -1,6 +1,12 @@
 #
-# OpenSSL example configuration file.
-# This is mostly being used for generation of certificate requests.
+# Certerator
+# (C) Stuart Morgan <stuart.morgan@mwrinfosecurity.com> @ukstufus
+#
+# https://github.com/stufus/certerator
+#
+# This is an OpenSSL configuration file which will generate a certificate containing
+# the attributes necessary to be recognised as an EV certificate, providing that the OID
+# is associated with the signing certification authority and marked as an EV CA.
 #
 
 HOME			= .

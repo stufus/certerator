@@ -4,6 +4,8 @@
 #  Certerator 0.1-pre1
 #  Stuart Morgan <stuart.morgan@mwrinfosecurity.com> @ukstufus
 #
+#  https://github.com/stufus/certerator
+#
 #  This will generate a CA and certificate (signed by the CA) which can be used
 #  for code signing. It will also display the commands to run using both osslsigncode
 #  or signtool.exe depending on preference.
