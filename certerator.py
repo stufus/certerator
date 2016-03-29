@@ -180,6 +180,7 @@ if __name__ == "__main__":
             sys.stdout.write(colourise("Reusing "+config_ca['cert_filename']+" as the CA\n",'0;36'))
             ca_cert = crypto.load_certificate(crypto.FILETYPE_PEM, file(config_ca['cert_filename']).read())
             ca_key = crypto.load_privatekey(crypto.FILETYPE_PEM, file(config_ca['cert_key']).read())
+            sys.stdout.write(colourise(" SHA1 CA Fingerprint: "+ca_cert.digest('sha1')+"\n", '0;32'))
         else:
             sys.stdout.write(colourise("Generating new CA...",'0;32'))
             sys.stdout.flush()
@@ -193,12 +194,14 @@ if __name__ == "__main__":
             sys.stdout.write(colourise(" Written DER CA certificate to "+config_ca['cert_der']+"\n", '0;32'))
             sys.stdout.write(colourise(" Written CA private key to "+config_ca['cert_key']+"\n", '0;32'))
             sys.stdout.write(colourise(" Written CA PKCS12 (private key and certificate) to "+config_ca['cert_p12']+"\n", '0;32'))
+            sys.stdout.write(colourise(" SHA1 CA Fingerprint: "+ca_cert.digest('sha1')+"\n", '0;32'))
             
         # Now sort out the signing certificate
         if os.path.isfile(config_cert['cert_filename']) and os.path.isfile(config_cert['cert_key']):
             sys.stdout.write(colourise("Reusing "+config_cert['cert_filename']+" as the code signing certificate\n",'0;36'))
             cert_cert = crypto.load_certificate(crypto.FILETYPE_PEM, file(config_cert['cert_filename']).read())
             cert_key = crypto.load_privatekey(crypto.FILETYPE_PEM, file(config_cert['cert_key']).read())
+            sys.stdout.write(colourise(" SHA1 Cert Fingerprint: "+cert_cert.digest('sha1')+"\n", '0;32'))
         else:
             sys.stdout.write(colourise("Generating new signing certificate...",'0;32'))
             sys.stdout.flush()
@@ -210,6 +213,7 @@ if __name__ == "__main__":
             sys.stdout.write(colourise(" Written PEM certificate to "+config_cert['cert_filename']+"\n", '0;32'))
             sys.stdout.write(colourise(" Written private key to "+config_cert['cert_key']+"\n", '0;32'))
             sys.stdout.write(colourise(" Written PKCS12 (private key and certificate) to "+config_cert['cert_p12']+"\n", '0;32'))
+            sys.stdout.write(colourise(" SHA1 Cert Fingerprint: "+cert_cert.digest('sha1')+"\n", '0;32'))
 
         # Instructions
         sys.stdout.write("\n")
