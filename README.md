@@ -4,7 +4,7 @@ This is the code relating to a project to simplify the act of creating a CA, sig
 
 # Details
 
-A detailed description of the research, including tool usage instructions, is available at https://labs.mwrinfosecurity.com/blog/. It is designed to explain how to:
+A detailed description of the research, including tool usage instructions, is available at https://labs.mwrinfosecurity.com/blog/masquerading-as-a-windows-system-binary-using-digital-signatures/. It is designed to explain how to:
 
 * Create an "Authenticode" EXE digital signing certificate.
 * Cover a variety of methods of installing this on a target's machine, either as a user or local administrator.
