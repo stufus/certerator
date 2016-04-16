@@ -1,6 +1,8 @@
 #!/bin/sh
-# Certerator
+# Certerator EV Certificate Demo
+#
 # (C) Stuart Morgan <stuart.morgan@mwrinfosecurity.com> @ukstufus
+# MWR InfoSecurity, MWR Labs
 #
 # https://github.com/stufus/certerator
 #
